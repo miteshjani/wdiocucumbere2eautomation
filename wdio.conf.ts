@@ -87,6 +87,7 @@ export const config: WebdriverIO.Config = {
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
   // baseUrl: 'http://localhost:8080',
+  baseUrl: "https://the-internet.herokuapp.com/",
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -148,7 +149,7 @@ export const config: WebdriverIO.Config = {
     // <boolean> fail if there are any undefined or pending steps
     strict: false,
     // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tags: "",
+    tags: " @demo",
     // <number> timeout for step definitions
     timeout: 60000,
     // <boolean> Enable this config to treat undefined definitions as warnings.

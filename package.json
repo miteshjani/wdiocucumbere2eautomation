@@ -8,7 +8,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "demo": "wdio run ./wdio.conf.ts --cucumberOpts.tags='@demo'",
-    "wdio": "wdio run ./wdio.conf.ts"
+    "wdio": "wdio run ./wdio.conf.ts",
+    "demo1": "npx wdio wdio.conf.ts --cucumberOpts.tags='@demo'",
+    "smoke": "npx wdio wdio.conf.ts --cucumberOpts.tags='@smoke'"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
@@ -17,6 +19,7 @@
     "@wdio/globals": "^10.0.0",
     "@wdio/local-runner": "^10.0.0",
     "@wdio/spec-reporter": "^10.0.0",
+    "chai": "^6.3.0",
     "expect-webdriverio": "^8.0.0-alpha.3"
   }
 }

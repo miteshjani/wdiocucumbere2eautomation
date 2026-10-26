@@ -1,3 +1,11 @@
+import fs from "fs";
+import dotenv from "dotenv";
+import { error } from "console";
+
+dotenv.config();
+// let headless = process.env.HEADLESS;
+let debug = process.env.DEBUG;
+// console.log(`>> The headless flag: ${headless}`);
 export const config: WebdriverIO.Config = {
   //
   // ====================
@@ -5,7 +13,6 @@ export const config: WebdriverIO.Config = {
   // ====================
   // WebdriverIO supports running e2e tests as well as unit and component tests.
   runner: "local",
-  tsConfigPath: "./tsconfig.json",
 
   //
   // ==================
@@ -22,6 +29,8 @@ export const config: WebdriverIO.Config = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
+  // @ts-ignore
+  currentDt: new Date(),
   specs: [`${process.cwd()}/test/features/**/*.feature`],
   // Patterns to exclude.
   exclude: [
@@ -50,11 +59,36 @@ export const config: WebdriverIO.Config = {
   // https://saucelabs.com/platform/platform-configurator
   //
   capabilities: [
+    // {
+    //   /**Additional chrome options
+    //    *--headless
+    //    *--disable-dev-shm-usage
+    //    *--no-sandbox
+    //    *--window-size=1920,1080
+    //    *--disable-gpu
+    //    *--proxy-server=http://domain
+    //    binary
+    //    *--auth-server-whitelist="-"
+    //    */
+
+    // browserName: "chrome",
+    //   "goog:chromeOptions": {
+    //     args:
+    //       headless.toUpperCase() === "Y"
+    //         ? [
+    //             "--disable-web-security",
+    //             "--headless",
+    //             "--disable-dev-shm-usage",
+    //             "--no-sandbox",
+    //             "--window-size=1920,1080",
+    //           ]
+    //         : [],
+    //   },
+    // acceptInsecureCerts: true,
+    // timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
+    // },
     {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: ["--disable-web-security"],
-      },
+      browserName: "firefox",
       acceptInsecureCerts: true,
       timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
     },
@@ -67,7 +101,7 @@ export const config: WebdriverIO.Config = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: "silent",
+  logLevel: debug.toUpperCase() === "Y" ? "info" : "error",
   //
   // Set specific log levels per logger
   // loggers:
@@ -109,7 +143,7 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  // services: [],
+  services: ["chromedriver", "geckodriver"],
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -132,7 +166,21 @@ export const config: WebdriverIO.Config = {
   // Test reporter for stdout.
   // The only one supported by default is 'dot'
   // see also: https://webdriver.io/docs/dot-reporter
-  reporters: ["spec"],
+  reporters: [
+    "spec",
+    [
+      "allure",
+      {
+        outputDir: "allure-results",
+        disableWebdriverStepsReporting: true,
+        useCucumberStepReporter: true,
+        reportedEnvironmentVars: {
+          Environment: `${process.env.RUNNER === "LOCAL" ? process.env.ENVIRONMENT_TEST : process.env.ENVIRONMENT_UAT}`,
+          Middleware: "SIT-EAI",
+        },
+      },
+    ],
+  ],
 
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
@@ -175,8 +223,13 @@ export const config: WebdriverIO.Config = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {
-  // },
+  onPrepare: function (config, capabilities) {
+    if (process.env.RUNNER === "LOCAL" && fs.existsSync("./allure-results")) {
+      fs.rmSync("./allure-results", { recursive: true });
+    }
+    console.log(`>> config : ${config}`);
+    console.log(`>> capabilities: ${JSON.stringify(capabilities)}`);
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -213,9 +266,25 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs        List of spec file paths that are to be run
    * @param {object}         browser      instance of created browser/device session
-   */
-  // before: function (capabilities, specs) {
-  // },
+  //  */
+  //   before: function (capabilities, specs) {
+  //     const browserOptions = JSON.stringify(browser.options);
+  //     const formattedBrowserOptions = JSON.parse(browserOptions);
+  //     const envFile = path.join(
+  //       process.cwd(),
+  //       "allure-results",
+  //       "environment.properties",
+  //     );
+  //     const content = `browser=${browser.capabilities.browserName}
+  // browserVersion=${browser.capabilities.browserVersion}
+  // environment=${formattedBrowserOptions.environment || "QA"}
+  // baseUrl=${formattedBrowserOptions.sauceDemoURL}
+  // os=${process.platform}`;
+  //     fs.writeFileSync(envFile, content);
+  //     console.log(`>> browser.options: ${formattedBrowserOptions}`);
+  //     console.log(`>> specs ${JSON.stringify(specs)} `);
+  //     console.log(`>> capabilities ${JSON.stringify(capabilities)}`);
+  //   },
   /**
    * Runs before a WebdriverIO command gets executed.
    * @param {string} commandName hook command name
@@ -238,8 +307,22 @@ export const config: WebdriverIO.Config = {
    * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
    * @param {object}                 context  Cucumber World object
    */
-  // beforeScenario: function (world, context) {
-  // },
+  beforeScenario: function (world, context) {
+    // console.log(`>> World: ${JSON.stringify(world)}`);
+    // console.log(` >> Context: ${JSON.stringify(context)}`);
+    let arr = world.pickle.name.split(":");
+    if (arr.length > 0) {
+      // @ts-ignore
+      context.testid = arr[0];
+
+      // browser.options.testid = arr[0];
+      // @ts-ignore
+      if (!context.testid)
+        throw error(
+          `Error getting testid for current scenario ${world.pickle.name}`,
+        );
+    }
+  },
   /**
    *
    * Runs before a Cucumber Step.
@@ -260,8 +343,17 @@ export const config: WebdriverIO.Config = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {object}             context          Cucumber World object
    */
-  // afterStep: function (step, scenario, result, context) {
-  // },
+  afterStep: async function (step, scenario, result, context) {
+    console.log(`>>> step ${JSON.stringify(step)}`);
+    console.log(`>>> scenario ${JSON.stringify(scenario)}`);
+    console.log(`>>> result ${JSON.stringify(result)}`);
+    console.log(`>>> context ${JSON.stringify(context)}`);
+
+    if (!result.passed) {
+      const screenshot = await browser.takeScreenshot();
+      fs.writeFileSync(`./results/${Date.now()}.png`, screenshot, "base64");
+    }
+  },
   /**
    *
    * Runs after a Cucumber Scenario.
@@ -281,6 +373,12 @@ export const config: WebdriverIO.Config = {
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
   // afterFeature: function (uri, feature) {
+  //   // add more environment
+  //   console.log(`>> uri: ${uri}`);
+  //   console.log(`>> feature: ${feature}`);
+  //   console.log(`>> browser.options: ${JSON.stringify(browser.options)}`);
+  //   // @ts-ignore
+  //   allure.addEnvironment("Environments", browser.options.environment);
   // },
 
   /**
@@ -300,6 +398,11 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<String>} specs List of spec file paths that ran
    */
   // after: function (result, capabilities, specs) {
+  //   // @ts-ignore
+  //   allure.addArgument("Environments", browser.options.environment);
+  //   console.log(`>> result ${result}`);
+  //   console.log(`>> capabilities ${capabilities}`);
+  //   console.log(`>> specs ${specs}`);
   // },
   /**
    * Gets executed right after terminating the webdriver session.

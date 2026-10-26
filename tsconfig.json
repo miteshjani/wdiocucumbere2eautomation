@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "nodenext",
     "module": "NodeNext",
-    "target": "es2024",
-    "lib": ["es2024", "dom"],
+    "target": "es2022",
+
+    // "target": "es2019",
+    // "module": "commonjs",
+    "lib": ["es2022", "dom"],
     "types": [
       "node",
       "@wdio/globals/types",

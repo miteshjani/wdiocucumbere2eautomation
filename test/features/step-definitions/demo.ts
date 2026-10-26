@@ -35,7 +35,7 @@ Given(/^Google page is opened$/, async () => {
   await browser.maximizeWindow();
 });
 
-When(/^Search with (.*)$/, async (searchItem) => {
+When(/^Search with (.*)$/, async function (searchItem) {
   (await $("#ti6dpd")).setValue(searchItem);
   // await browser.debug();
   // await $("(//input[@name='btnK'])[1]").waitForDisplayed({ timeout: 20000 });
@@ -57,11 +57,11 @@ When(/^Search with (.*)$/, async (searchItem) => {
   // await browser.keys("Enter");
 });
 
-Then(/^Click on the first search result$/, async () => {
+Then(/^Click on the first search result$/, async function () {
   (await $("(//h3[contains(text(),'WebdriverIO')])[1]")).click();
 });
 
-When(/^URL should match (.*)$/, async (expectedURL) => {
+When(/^URL should match (.*)$/, async function (expectedURL) {
   console.log(`>> expectedURL: ${expectedURL}`);
   await browser.waitUntil(
     async function () {
@@ -82,13 +82,13 @@ When(/^URL should match (.*)$/, async (expectedURL) => {
 /**
  * Web Interaction
  */
-Given(/^A web page is opened$/, async () => {
+Given(/^A web page is opened$/, async function () {
   await browser.url("https://www.amazon.com.au/");
   await browser.setTimeout({ implicit: 15000, pageLoad: 10000 });
   await browser.maximizeWindow();
 });
 
-When(/^Perform web interactions$/, async () => {
+When(/^Perform web interactions$/, async function () {
   /**
    *1.Input box
    *Actions:

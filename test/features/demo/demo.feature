@@ -8,7 +8,7 @@ Feature: Feature name
     When the user clicks on Make Appointment button
     Then the login page is displayed
 
-    @demo @smoke
+    @demo1
     Scenario Outline: Run First Demo Feature
     Given Google page is opened
     When Search with <SearchItem>

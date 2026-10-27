@@ -2,7 +2,7 @@ Feature: Inventory
 
   
 
-     @demo1 @smoke @debug
+     @demo1 @debug
     Scenario Outline:<TestID>: Demo Inventory
     # Given Login to inventorty web app
     Given As a standard user I login to inventory webapp

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { error } from "console";
 
 dotenv.config();
-// let headless = process.env.HEADLESS;
+let headless = process.env.HEADLESS;
 let debug = process.env.DEBUG;
 // console.log(`>> The headless flag: ${headless}`);
 export const config: WebdriverIO.Config = {
@@ -59,39 +59,39 @@ export const config: WebdriverIO.Config = {
   // https://saucelabs.com/platform/platform-configurator
   //
   capabilities: [
-    // {
-    //   /**Additional chrome options
-    //    *--headless
-    //    *--disable-dev-shm-usage
-    //    *--no-sandbox
-    //    *--window-size=1920,1080
-    //    *--disable-gpu
-    //    *--proxy-server=http://domain
-    //    binary
-    //    *--auth-server-whitelist="-"
-    //    */
-
-    // browserName: "chrome",
-    //   "goog:chromeOptions": {
-    //     args:
-    //       headless.toUpperCase() === "Y"
-    //         ? [
-    //             "--disable-web-security",
-    //             "--headless",
-    //             "--disable-dev-shm-usage",
-    //             "--no-sandbox",
-    //             "--window-size=1920,1080",
-    //           ]
-    //         : [],
-    //   },
-    // acceptInsecureCerts: true,
-    // timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
-    // },
     {
-      browserName: "firefox",
+      /**Additional chrome options
+       *--headless
+       *--disable-dev-shm-usage
+       *--no-sandbox
+       *--window-size=1920,1080
+       *--disable-gpu
+       *--proxy-server=http://domain
+       binary
+       *--auth-server-whitelist="-"
+       */
+
+      browserName: "chrome",
+      "goog:chromeOptions": {
+        args:
+          headless.toUpperCase() === "Y"
+            ? [
+                "--disable-web-security",
+                "--headless",
+                "--disable-dev-shm-usage",
+                "--no-sandbox",
+                "--window-size=1920,1080",
+              ]
+            : [],
+      },
       acceptInsecureCerts: true,
       timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
     },
+    // {
+    //   browserName: "firefox",
+    //   acceptInsecureCerts: true,
+    //   timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
+    // },
   ],
 
   //

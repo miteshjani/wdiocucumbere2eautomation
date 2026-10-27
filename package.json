@@ -9,11 +9,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "demo": "wdio run ./wdio.conf.ts --cucumberOpts.tags='@demo'",
     "wdio": "wdio run ./wdio.conf.ts",
-    "test.debug": "cross-env DEBUG=Y HEADLESS=N npx wdio config/wdio.test.conf.ts --cucumberOpts.tags='@debug' > output.txt",
-    "test.demo1": "cross-env DEBUG=Y HEADLESS=N npx wdio config/wdio.test.conf.ts --cucumberOpts.tags='@demo'",
-    "test.smoke": "cross-env DEBUG=N HEADLESS=Y npx wdio config/wdio.test.conf.ts --cucumberOpts.tags='@smoke'",
-    "uat.demo1": "cross-env DEBUG=N HEADLESS=N npx wdio config/wdio.uat.conf.ts --cucumberOpts.tags='@demo'",
-    "uat.smoke": "cross-env DEBUG=N HEADLESS=Y npx wdio config/wdio.uat.conf.ts --cucumberOpts.tags='@smoke'"
+    "test:debug": "cross-env DEBUG=Y HEADLESS=N npx wdio config/wdio.test.conf.ts --cucumberOpts.tags='@debug' > output.txt",
+    "test:demo1": "cross-env DEBUG=Y HEADLESS=N npx wdio config/wdio.test.conf.ts --cucumberOpts.tags='@demo'",
+    "test:smoke": "cross-env DEBUG=N HEADLESS=Y npx wdio config/wdio.test.conf.ts --cucumberOpts.tags='@smoke'",
+    "uat:demo1": "cross-env DEBUG=N HEADLESS=N npx wdio config/wdio.uat.conf.ts --cucumberOpts.tags='@demo'",
+    "uat:smoke": "cross-env DEBUG=N HEADLESS=Y npx wdio config/wdio.uat.conf.ts --cucumberOpts.tags='@smoke'"
   },
   "devDependencies": {
     "@types/chai": "^5.2.3",

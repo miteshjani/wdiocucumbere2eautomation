@@ -7,7 +7,10 @@ When(/^An as (.*) user login to nopcommerce site$/, async function (user) {
   user = user.trim().toUpperCase();
   try {
     reporter.addStep(this.testid, "info", `Login to nopCommerce demo site...`);
-
+    // @ts-ignore
+    console.log(`URL: ${browser.options.nopCommerceBaseURL}`);
+    console.log(`Username: ${process.env[`TEST_NOP_${user}_USERNAME`]}`);
+    console.log(`Password: ${process.env[`TEST_NOP_${user}_PASSWORD`]}`);
     await nopcommerceHomePage.loginTonopCommerceWeb(
       this.testid,
       // @ts-ignore

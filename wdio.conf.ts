@@ -350,6 +350,11 @@ export const config: WebdriverIO.Config = {
     console.log(`>>> context ${JSON.stringify(context)}`);
 
     if (!result.passed) {
+      const dir = "./results";
+
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
       const screenshot = await browser.takeScreenshot();
       fs.writeFileSync(`./results/${Date.now()}.png`, screenshot, "base64");
     }

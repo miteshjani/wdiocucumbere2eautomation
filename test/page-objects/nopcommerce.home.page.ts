@@ -32,8 +32,9 @@ class HomePage extends Page {
     try {
       reporter.addStep(testid, "info", `Login to ${url} with ${username}`);
       await this.navigateTo(url);
-      await this.typeIntoSlowly(await this.usernameInputBox, username);
-      await this.typeIntoSlowly(await this.passwordInputBox, password);
+      await browser.pause(20000);
+      await this.typeInto(await this.usernameInputBox, username);
+      await this.typeInto(await this.passwordInputBox, password);
       await this.click(await this.loginBtn);
       reporter.addStep(
         testid,

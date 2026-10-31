@@ -2,5 +2,8 @@
   "REQRES": {
     "GET_USERS": "/api/users?",
     "QUERY_PARAM": { "page": 2 }
+  },
+  "DB_QUERIES": {
+    "GET_EMP_DETAILS": "select top 1 * from [sample].[dbo].[Employees] where [CreatedDate] = '2026-10-29 09:11:34.697'"
   }
 }

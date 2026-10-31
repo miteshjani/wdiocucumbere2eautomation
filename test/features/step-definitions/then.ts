@@ -3,6 +3,21 @@ import { expect } from "chai";
 import reporter from "../../helper/reporter.ts";
 import fs from "fs";
 import nopcommerceCustListPage from "../../page-objects/nopcommerce.custList.page.ts";
+import dbHelper from "../../helper/dbHelper.ts";
+import constants from "../../../data/constant.json" with { type: "json" };
+
+// const sqlConfig = {
+//   user: "admin",
+//   password: "admin",
+//   server: "127.0.0.1",
+//   port: 56203,
+//   database: "master",
+//   options: {
+//     encrypt: true, // for azure
+//     trustServerCertificate: true, // change to true for local dev / self-signed certs
+//     trustedConnection: true,
+//   },
+// };
 
 Then(/^Inventory page should list (.*)$/, async function (noOfProducts) {
   if (!noOfProducts) throw new Error(`Invalid number provided${noOfProducts}`);
@@ -134,6 +149,40 @@ Then(/^Verify if all users exists in customer list$/, async function () {
     }
   } catch (error) {
     error.message = `${this.testid}: failed at checking users in nopcommerce site, ${error.message}`;
+    throw error;
+  }
+});
+
+Then(/^Validate DB result$/, async function () {
+  try {
+    /**Execute DB Query */
+    let testid = this.testid;
+
+    let res: any;
+    await browser.call(async function () {
+      console.log(
+        `Query Param: ${JSON.stringify(constants.DB_QUERIES.GET_EMP_DETAILS)}`,
+      );
+      // @ts-ignore
+      console.log(`SQLConfig: ${JSON.stringify(browser.options.sqlConfig)}`);
+      // console.log(`SQLConfig: ${JSON.stringify(sqlConfig)}`);
+
+      res = await dbHelper.executeQuery(
+        testid,
+        // @ts-ignore
+        browser.options.sqlConfig,
+        constants.DB_QUERIES.GET_EMP_DETAILS,
+      );
+    });
+    console.log(`res: ${JSON.stringify(res)}`);
+    reporter.addStep(this.testid, "debug", `DB response received, data:${res}`);
+    /**3.Store results */
+    let data = JSON.stringify(res);
+    let fileName = `${process.cwd()}/data/db-res/dbresults.json`;
+    fs.writeFileSync(fileName, data);
+    reporter.addStep(this.testid, "info", `DB response  stored in JSON file`);
+  } catch (error) {
+    error.message = `${this.testid}: failed at getting DB results, ${error.message}`;
     throw error;
   }
 });
